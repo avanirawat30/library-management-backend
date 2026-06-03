@@ -28,6 +28,28 @@ router.post("/add", (req, res) => {
     });
 });
 
+router.put("/:id", (req, res) => {
+
+    const id = Number(req.params.id);
+
+    const book = books.find(book => book.id === id);
+
+    if (!book) {
+        return res.status(404).json({
+            message: "Book not found"
+        });
+    }
+
+    book.title = req.body.title;
+    book.author = req.body.author;
+
+    res.json({
+        message: "Book updated successfully",
+        book: book
+    });
+
+});
+
 router.delete("/:id", (req, res) => {
 
     const id = Number(req.params.id);
