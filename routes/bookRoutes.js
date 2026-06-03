@@ -2,12 +2,17 @@ const express = require("express");
 
 const router = express.Router();
 let books = [];
+let currentId = 1;
 
 router.get("/", (req, res) => {
     res.json(books);
 });
 router.post("/add", (req, res) => {
-    const newBook = req.body;
+    const newBook = {
+    id: currentId++,
+    title: req.body.title,
+    author: req.body.author
+};
 
     if (!newBook.title || !newBook.author) {
         return res.status(400).json({
@@ -23,8 +28,16 @@ router.post("/add", (req, res) => {
     });
 });
 
-router.delete("/delete", (req, res) => {
-    res.send("Book deleted");
+router.delete("/:id", (req, res) => {
+
+    const id = Number(req.params.id);
+
+    books = books.filter(book => book.id !== id);
+
+    res.json({
+        message: "Book deleted successfully"
+    });
+
 });
 
 module.exports = router;
