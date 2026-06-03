@@ -4,6 +4,8 @@ const app = express();
 
 const bookRoutes = require("./routes/bookRoutes");
 
+app.use(express.json());
+
 app.use("/books", bookRoutes);
 
 app.listen(5000, () => {
