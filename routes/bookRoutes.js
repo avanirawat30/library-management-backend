@@ -1,65 +1,83 @@
 const express = require("express");
 
 const router = express.Router();
-let books = [];
-let currentId = 1;
+const Book = require("../models/Book");
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
+  try {
+    const books = await Book.find();
+
     res.json(books);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
 });
-router.post("/add", (req, res) => {
-    const newBook = {
-    id: currentId++,
-    title: req.body.title,
-    author: req.body.author
-};
+router.post("/add", async (req, res) => {
+  try {
+    const newBook = await Book.create({
+      title: req.body.title,
+      author: req.body.author
+    });
 
-    if (!newBook.title || !newBook.author) {
-        return res.status(400).json({
-            message: "Title and author are required"
-        });
+    res.json({
+      message: "Book added successfully",
+      book: newBook
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
+});
+
+router.put("/:id", async (req, res) => {
+  try {
+    const updatedBook = await Book.findByIdAndUpdate(
+      req.params.id,
+      {
+        title: req.body.title,
+        author: req.body.author
+      },
+      { new: true }
+    );
+
+    if (!updatedBook) {
+      return res.status(404).json({
+        message: "Book not found"
+      });
     }
 
-    books.push(newBook);
-
     res.json({
-        message: "Book added successfully",
-        book: newBook
+      message: "Book updated successfully",
+      book: updatedBook
     });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
 });
 
-router.put("/:id", (req, res) => {
+router.delete("/:id", async (req, res) => {
+  try {
+    const deletedBook = await Book.findByIdAndDelete(req.params.id);
 
-    const id = Number(req.params.id);
-
-    const book = books.find(book => book.id === id);
-
-    if (!book) {
-        return res.status(404).json({
-            message: "Book not found"
-        });
+    if (!deletedBook) {
+      return res.status(404).json({
+        message: "Book not found"
+      });
     }
 
-    book.title = req.body.title;
-    book.author = req.body.author;
-
     res.json({
-        message: "Book updated successfully",
-        book: book
+      message: "Book deleted successfully"
     });
-
-});
-
-router.delete("/:id", (req, res) => {
-
-    const id = Number(req.params.id);
-
-    books = books.filter(book => book.id !== id);
-
-    res.json({
-        message: "Book deleted successfully"
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
     });
-
+  }
 });
 
 module.exports = router;
