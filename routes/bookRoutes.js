@@ -2,8 +2,8 @@ const express = require("express");
 
 const router = express.Router();
 const Book = require("../models/Book");
-
-router.get("/", async (req, res) => {
+const authMiddleware = require("../middleware/authMiddleware");
+router.get("/", authMiddleware, async (req, res) => {
   try {
     const books = await Book.find();
 
