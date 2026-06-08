@@ -21,6 +21,11 @@ router.post(
   adminMiddleware,
   async (req, res) => {
   try {
+    if (!req.body.title || !req.body.author) {
+  return res.status(400).json({
+    message: "Title and author are required"
+  });
+}
     const newBook = await Book.create({
       title: req.body.title,
       author: req.body.author

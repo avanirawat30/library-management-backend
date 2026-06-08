@@ -7,6 +7,15 @@ const jwt = require("jsonwebtoken");
 
 router.post("/register", async (req, res) => {
   try {
+    const existingUser = await User.findOne({
+  email: req.body.email
+});
+
+if (existingUser) {
+  return res.status(400).json({
+    message: "User already exists"
+  });
+}
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
     const user = await User.create({
@@ -33,10 +42,10 @@ router.post("/login", async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({
-        message: "User not found"
-      });
-    }
+  return res.status(400).json({
+    message: "Invalid email or password"
+  });
+}
 
     const isMatch = await bcrypt.compare(
       req.body.password,
@@ -44,10 +53,10 @@ router.post("/login", async (req, res) => {
     );
 
     if (!isMatch) {
-      return res.status(400).json({
-        message: "Invalid password"
-      });
-    }
+  return res.status(400).json({
+    message: "Invalid email or password"
+  });
+}
 
    const token = jwt.sign(
   {
