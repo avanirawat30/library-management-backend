@@ -42,8 +42,6 @@ router.post(
 
 router.put(
   "/:id",
-  authMiddleware,
-  adminMiddleware,
   async (req, res) => {
   try {
     const updatedBook = await Book.findByIdAndUpdate(
