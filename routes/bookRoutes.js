@@ -17,8 +17,6 @@ router.get("/", async (req, res) => {
 });
 router.post(
   "/add",
-  authMiddleware,
-  adminMiddleware,
   async (req, res) => {
   try {
     if (!req.body.title || !req.body.author) {
