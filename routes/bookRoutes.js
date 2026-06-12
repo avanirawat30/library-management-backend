@@ -74,8 +74,6 @@ router.put(
 
 router.delete(
   "/:id",
-  authMiddleware,
-  adminMiddleware,
   async (req, res) => {
   try {
     const deletedBook = await Book.findByIdAndDelete(req.params.id);
