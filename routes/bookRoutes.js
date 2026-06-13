@@ -17,6 +17,7 @@ router.get("/", async (req, res) => {
 });
 router.post(
   "/add",
+  authMiddleware,
   async (req, res) => {
   try {
     if (!req.body.title || !req.body.author) {
@@ -42,6 +43,7 @@ router.post(
 
 router.put(
   "/:id",
+  authMiddleware,
   async (req, res) => {
   try {
     const updatedBook = await Book.findByIdAndUpdate(
@@ -72,6 +74,7 @@ router.put(
 
 router.delete(
   "/:id",
+  authMiddleware,
   async (req, res) => {
   try {
     const deletedBook = await Book.findByIdAndDelete(req.params.id);
