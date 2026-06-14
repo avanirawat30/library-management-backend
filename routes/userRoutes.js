@@ -22,7 +22,7 @@ if (existingUser) {
   name: req.body.name,
   email: req.body.email,
   password: hashedPassword,
-  role: req.body.role
+  role: req.body.role || "student"
 });
 
     res.json({
@@ -71,7 +71,8 @@ router.post("/login", async (req, res) => {
 
 res.json({
   message: "Login successful",
-  token
+  token,
+  role: user.role
 });
 
   } catch (error) {
