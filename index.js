@@ -7,10 +7,12 @@ const app = express();
 app.use(cors());
 const bookRoutes = require("./routes/bookRoutes");
 const userRoutes = require("./routes/userRoutes");
+const issueRoutes = require("./routes/issueRoutes");
 app.use(express.json());
 
 app.use("/books", bookRoutes);
 app.use("/users", userRoutes);
+app.use("/issues", issueRoutes);
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
