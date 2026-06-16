@@ -87,4 +87,22 @@ router.post(
     }
   }
 );
+router.get(
+  "/my-books",
+  authMiddleware,
+  async (req, res) => {
+    try {
+      const issues = await Issue.find({
+        user: req.user.id
+      }).populate("book");
+
+      res.json(issues);
+
+    } catch (error) {
+      res.status(500).json({
+        message: error.message
+      });
+    }
+  }
+);
 module.exports = router;
