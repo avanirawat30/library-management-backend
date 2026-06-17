@@ -27,10 +27,17 @@ router.post(
         });
       }
 
-      const issue = await Issue.create({
-        user: req.user.id,
-        book: req.params.bookId
-      });
+     const issueDate = new Date();
+
+const dueDate = new Date();
+dueDate.setDate(issueDate.getDate() + 7);
+
+const issue = await Issue.create({
+  user: req.user.id,
+  book: req.params.bookId,
+  issueDate,
+  dueDate
+});
 
       book.available = false;
 
@@ -95,6 +102,24 @@ router.get(
       const issues = await Issue.find({
         user: req.user.id
       }).populate("book");
+
+      res.json(issues);
+
+    } catch (error) {
+      res.status(500).json({
+        message: error.message
+      });
+    }
+  }
+);
+router.get(
+  "/all-issued",
+  authMiddleware,
+  async (req, res) => {
+    try {
+      const issues = await Issue.find()
+        .populate("book")
+        .populate("user", "name email");
 
       res.json(issues);
 

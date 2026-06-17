@@ -2,6 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 const Book = require("../models/Book");
+const Issue = require("../models/Issue");
 const authMiddleware = require("../middleware/authMiddleware");
 const adminMiddleware = require("../middleware/adminMiddleware");
 router.get("/", async (req, res) => {
@@ -79,23 +80,39 @@ router.delete(
   authMiddleware,
   adminMiddleware,
   async (req, res) => {
-  try {
-    const deletedBook = await Book.findByIdAndDelete(req.params.id);
+    try {
 
-    if (!deletedBook) {
-      return res.status(404).json({
-        message: "Book not found"
+      const activeIssue = await Issue.findOne({
+        book: req.params.id
+      });
+
+      if (activeIssue) {
+        return res.status(400).json({
+          message: "Cannot delete an issued book"
+        });
+      }
+
+      const deletedBook =
+        await Book.findByIdAndDelete(
+          req.params.id
+        );
+
+      if (!deletedBook) {
+        return res.status(404).json({
+          message: "Book not found"
+        });
+      }
+
+      res.json({
+        message: "Book deleted successfully"
+      });
+
+    } catch (error) {
+      res.status(500).json({
+        message: error.message
       });
     }
-
-    res.json({
-      message: "Book deleted successfully"
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: error.message
-    });
   }
-});
+);
 
 module.exports = router;

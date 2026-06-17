@@ -16,10 +16,12 @@ const issueSchema = new mongoose.Schema({
   issueDate: {
     type: Date,
     default: Date.now
+  },
+
+  dueDate: {
+    type: Date,
+    required: true
   }
 });
 
-module.exports = mongoose.model(
-  "Issue",
-  issueSchema
-);
+module.exports = mongoose.model("Issue", issueSchema);
